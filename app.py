@@ -14,12 +14,12 @@ from Loan import *
 from LoanPortfolio import *
 from LoanImpacts import *
 from plotly.subplots import make_subplots
-fig = go.Figure() # or any Plotly Express function e.g. px.bar(...)
 
-
+####### Part One  Layout Elements #############################
 # setup app with stylesheets
 app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
+# Basic Loan Input
 
 controls = dbc.Card(
     [
@@ -75,6 +75,8 @@ controls = dbc.Card(
     ],
     body=True, color="light",
 )
+
+# Multiple Loan Input
 
 multi_control_1 = dbc.Card(
     [
@@ -183,11 +185,12 @@ multi_control_2 = dbc.Card(
             ]
         ),
 
-        dbc.Button("Submit", id="Submit-button-3", outline=True, color="primary", className="mr-1"),
+
     ],
     body=True, color="light",
 )
 
+# Basic Loan Table
 table = dash_table.DataTable(
         id='table',
         columns=[{"name": i, "id": i}
@@ -210,9 +213,11 @@ table = dash_table.DataTable(
         style_header={
             'backgroundColor': 'rgb(230, 230, 230)',
             'fontWeight': 'bold'
-        }
+        },
+        style_table={'height': '300px', 'overflowY': 'auto'}
     )
 
+# Family Contribution Input
 contribution = dbc.Card(
     [
         dbc.FormGroup(
@@ -256,6 +261,7 @@ contribution = dbc.Card(
     body=True, color="light",
 )
 
+# Family Contribution Table
 
 table_2 = dash_table.DataTable(
     id='table-2',
@@ -277,6 +283,8 @@ table_2 = dash_table.DataTable(
             'fontWeight': 'bold'
         }
 )
+
+# Multiple loans amortization schedule table
 
 table_multi = dash_table.DataTable(
         id='table-multi',
@@ -300,9 +308,11 @@ table_multi = dash_table.DataTable(
         style_header={
             'backgroundColor': 'rgb(230, 230, 230)',
             'fontWeight': 'bold'
-        }
+        },
+        style_table={'height': '300px', 'overflowY': 'auto'}
     )
 
+# Overall Layout
 app.layout = dbc.Container(
     [
         dbc.Row(
@@ -365,10 +375,19 @@ app.layout = dbc.Container(
         ),
         dbc.Row(
             [
-                dbc.Col(multi_control_1, md=6),
-                dbc.Col(multi_control_2, md=6)
+                dbc.Col(
+                    [
+                        dbc.Row(
+                            [
+                                dbc.Col(multi_control_1, md=6),
+                                dbc.Col(multi_control_2, md=6)
+                                    ]),
+                        dbc.Row(dbc.Button("Submit", id="Submit-button-3", outline=True, color="primary", className="mr-2",block=True),
+                                align="bottom", style={'marginTop': 20, 'marginLeft': 20, 'marginRight': 20})
+                        ]),
+                dbc.Col(dcc.Graph(id="table-graph-multi"), md=6)
             ],
-            align="top", style={'marginTop': 20, 'marginLeft': 40,'marginRight': 40},
+            align="top", style={'marginTop': 20, 'marginLeft': 40,'marginRight': 20},
         ),
         dbc.Row(
             [
@@ -382,6 +401,9 @@ app.layout = dbc.Container(
     fluid=True
 )
 
+
+####### Part Two  Input Error alert #############################
+# If you input invalid value, the input field will turn red to remind you that there is something wrong with your input
 
 @app.callback(Output('input-principal', 'invalid'),
               Input('input-principal', 'value'))
@@ -450,7 +472,197 @@ def check_input_validaty_extra(extra):
     else:
         return False
 
-# Draw the table
+
+@app.callback(Output('input-principal-multi1', 'invalid'),
+              Input('input-principal-multi1', 'value'))
+def check_input_validaty_principal_1(principal):
+    if principal is not None:
+        try:
+            type(float(principal)) == float
+        except:
+            return True
+        else:
+            if float(principal) <= 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('input-term-multi1', 'invalid'),
+              Input('input-term-multi1', 'value'))
+def check_input_validaty_term_1(term):
+    if term is not None:
+        try:
+            type(float(term)) == float
+        except:
+            return True
+        else:
+            if float(term) <= 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('input-interest-multi1', 'invalid'),
+              Input('input-interest-multi1', 'value'))
+def check_input_validaty_interest_1(interest):
+    if interest is not None:
+        try:
+            type(float(interest)) == float
+        except:
+            return True
+        else:
+            if float(interest) <= 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('input-extra-multi1', 'invalid'),
+              Input('input-extra-multi1', 'value'))
+def check_input_validaty_extra_1(extra):
+    if extra is not None:
+        try:
+            type(float(extra)) == float
+        except:
+            return True
+        else:
+            if float(extra) < 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('input-principal-multi2', 'invalid'),
+              Input('input-principal-multi2', 'value'))
+def check_input_validaty_principal_2(principal):
+    if principal is not None:
+        try:
+            type(float(principal)) == float
+        except:
+            return True
+        else:
+            if float(principal) <= 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('input-term-multi2', 'invalid'),
+              Input('input-term-multi2', 'value'))
+def check_input_validaty_term_2(term):
+    if term is not None:
+        try:
+            type(float(term)) == float
+        except:
+            return True
+        else:
+            if float(term) <= 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('input-interest-multi2', 'invalid'),
+              Input('input-interest-multi2', 'value'))
+def check_input_validaty_interest_2(interest):
+    if interest is not None:
+        try:
+            type(float(interest)) == float
+        except:
+            return True
+        else:
+            if float(interest) <= 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('input-extra-multi2', 'invalid'),
+              Input('input-extra-multi2', 'value'))
+def check_input_validaty_extra_2(extra):
+    if extra is not None:
+        try:
+            type(float(extra)) == float
+        except:
+            return True
+        else:
+            if float(extra) < 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('contribution-1', 'invalid'),
+              Input('contribution-1', 'value'))
+def check_input_validaty_contr_1(extra):
+    if extra is not None:
+        try:
+            type(float(extra)) == float
+        except:
+            return True
+        else:
+            if float(extra) < 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('contribution-2', 'invalid'),
+              Input('contribution-2', 'value'))
+def check_input_validaty_contr_2(extra):
+    if extra is not None:
+        try:
+            type(float(extra)) == float
+        except:
+            return True
+        else:
+            if float(extra) < 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+
+@app.callback(Output('contribution-3', 'invalid'),
+              Input('contribution-3', 'value'))
+def check_input_validaty_contr_3(extra):
+    if extra is not None:
+        try:
+            type(float(extra)) == float
+        except:
+            return True
+        else:
+            if float(extra) < 0.0:
+                return True
+            else:
+                return False
+    else:
+        return False
+
+####### Part Three  Tables and  Graphs #############################
+
+# Draw the basic loan table
+
 @app.callback(Output('table','data'),
               Input('Submit-button', 'n_clicks'),
               State('input-principal', 'value'),
@@ -479,7 +691,7 @@ def loan_calculation(n_clicks,principal,term,interest,extra):
             x.append(a)
         return x
 
-
+# Draw the basic loan graph
 @app.callback(
     Output('table-graph', "figure"),
     Input('Submit-button', 'n_clicks'),
@@ -657,7 +869,7 @@ def update_graph(n_clicks,rows):
               State('input-interest-multi2', 'value'),
               State('input-extra-multi2', 'value')
               )
-def loan_calculation(n_clicks,principal,term,interest,extra,principal1,term1,interest1,extra1,principal2,term2,interest2,extra2):
+def loan_calculation_multi(n_clicks,principal,term,interest,extra,principal1,term1,interest1,extra1,principal2,term2,interest2,extra2):
     if n_clicks is not None:
         loan0 = Loan(principal=float(principal), rate=float(interest), term=float(term), extra_payment=float(extra))
         loan1 = Loan(principal=float(principal1), rate=float(interest1), term=float(term1), extra_payment=float(extra1))
@@ -694,6 +906,48 @@ def loan_calculation(n_clicks,principal,term,interest,extra,principal1,term1,int
             x.append(a)
 
         return x
+
+# Graph of multiple loans
+@app.callback(
+    Output('table-graph-multi', "figure"),
+    Input('Submit-button-3', 'n_clicks'),
+    Input('table-multi', "data"))
+def update_graph(n_clicks,rows):
+    if n_clicks is not None:
+        df = pd.DataFrame(rows)
+        # Stacked Bar Chart
+        index = df.index.tolist()
+        x_array = [i+1 for i in index]
+        trace_1 = go.Bar(
+            x=x_array,
+            y=df['Applied Principal'].tolist(),
+            name='Principal'
+        )
+
+        trace_2 = go.Bar(
+            x=x_array,
+            y=df['Applied Interest'].tolist(),
+            name='Interest'
+        )
+
+        trace = [trace_1, trace_2]
+
+        layout = go.Layout(
+            title='Amortization Schedule Plot',
+            barmode='stack'
+        )
+
+        # fig = go.Figure(data=trace, layout=layout)
+
+    else:
+        trace = []
+        layout = go.Layout(
+            title='Amortization Schedule Plot',
+            barmode='stack'
+        )
+
+    fig = go.Figure(data=trace, layout=layout)
+    return fig
 
 # Main
 if __name__ == "__main__":
